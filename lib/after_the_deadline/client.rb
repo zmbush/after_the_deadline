@@ -9,6 +9,7 @@ module AfterTheDeadline
     def initialize(uri: nil, api_key: nil, dictionary: nil, ignore_types: nil)
       set_custom_dictionary(dictionary || [])
       set_ignore_types(ignore_types)
+      uri = uri[0...-1] if uri[-1] == "/" #remove trailing slash
       @uri = uri
       @api_key = api_key
     end
@@ -78,7 +79,7 @@ module AfterTheDeadline
 
     def perform(action, params)
       params[:key] = @api_key if @api_key
-      response = Net::HTTP.post_form URI.parse("#{@uri}#{action}".gsub("//","/")), params
+      response = Net::HTTP.post_form URI.parse("#{@uri}#{action}"), params
       raise "Unexpected response code from AtD service: #{response.code} #{response.message}" unless response.is_a? Net::HTTPSuccess
       response.body
     end
