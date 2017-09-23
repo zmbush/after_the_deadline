@@ -44,8 +44,8 @@ module AfterTheDeadline
     # Invoke the checkDocument service with provided text.
     #
     # Returns list of AfterTheDeadline::Error objects.
-    def check(data)
-      results = Crack::XML.parse(perform('/checkDocument', :data => data))['results']
+    def check(data, action: DEFAULT_CHECK_ACTION)
+      results = Crack::XML.parse(perform("/#{action}", :data => data))['results']
       return [] if results.nil? # we have no errors in our data
 
       raise "Server returned an error: #{results['message']}" if results['message']
